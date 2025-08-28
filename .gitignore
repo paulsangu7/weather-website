@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+myvenv/
+env/
+ENV/
+
+# Flask / Django / general
+instance/
+*.sqlite3
+
+# IDE / editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+
+# Logs / database backups
+*.log
+*.bak
+*.backup
+
+# Mac OS
+.DS_Store
+
+# Windows
+Thumbs.db
