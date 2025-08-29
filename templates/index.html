@@ -1,30 +1,26 @@
 {% extends "base.html" %}
+
+{% block title %}Weather - Home{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <form action="{{ url_for('weather') }}" method="POST" class="d-flex mb-3">
-            <input type="text" class="form-control me-2" name="city" placeholder="Enter city" required>
-            <button class="btn btn-primary" type="submit">Check Weather</button>
-        </form>
+<div class="card">
+  <h2>Weather Search</h2>
+  <form method="POST" action="{{ url_for('weather') }}">
+    <input type="text" name="city" placeholder="Enter City" required>
+    <button type="submit" class="btn">Search</button>
+  </form>
 
-        {% if error %}
-            <div class="alert alert-danger">{{ error }}</div>
-        {% endif %}
+  {% if weather %}
+  <div style="margin-top:20px; text-align:center;">
+    {% if weather.icon_url %}
+      <img src="{{ weather.icon_url }}" alt="Weather icon" style="width:100px; height:100px;">
+    {% endif %}
+    <p>Temperature: <strong>{{ weather.temperature }} °C</strong></p>
+    <p>Humidity: <strong>{{ weather.humidity }}%</strong></p>
+    <p>Wind Speed: <strong>{{ weather.wind_speed }} m/s</strong></p>
+    <p>Condition: <strong>{{ weather.condition }}</strong></p>
+  </div>
+{% endif %}
 
-        {% if weather %}
-        <div class="card shadow p-3">
-            <h3 class="text-center">{{ weather.city }}</h3>
-            <p class="text-center">
-                <img src="http://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="Weather icon">
-            </p>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">Temperature: {{ weather.temperature }} °C</li>
-                <li class="list-group-item">Humidity: {{ weather.humidity }}%</li>
-                <li class="list-group-item">Wind Speed: {{ weather.wind }} m/s</li>
-                <li class="list-group-item">Condition: {{ weather.description }}</li>
-            </ul>
-        </div>
-        {% endif %}
-    </div>
 </div>
 {% endblock %}

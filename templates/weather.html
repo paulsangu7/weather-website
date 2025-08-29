@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Weather{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2>Check Weather</h2>
+  <form action="{{ url_for('weather') }}" method="post">
+    <input type="text" name="city" placeholder="Enter city" value="{{ city or '' }}" style="padding:10px; width:80%; border-radius:8px; border:1px solid #ccc; margin-bottom:15px;">
+    <br>
+    <button type="submit" class="btn">Get Weather</button>
+  </form>
+
+  {% if weather %}
+    <div style="margin-top:20px;">
+      {% if weather.icon_url %}
+        <img src="{{ weather.icon_url }}" alt="{{ weather.condition }}" style="width:80px; height:80px;">
+      {% endif %}
+      <p>Temperature: {{ weather.temperature }} °C</p>
+      <p>Humidity: {{ weather.humidity }}%</p>
+      <p>Wind Speed: {{ weather.wind_speed }} m/s</p>
+      <p>Condition: {{ weather.condition }}</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

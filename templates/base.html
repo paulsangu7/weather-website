@@ -2,44 +2,221 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Weather App</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Weather & Agriculture App{% endblock %}</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f8ff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: #00796b;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .navbar .logo img {
+      width: 50px;
+    }
+
+    .navbar .links a, .navbar .links span {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 1.1em;
+      transition: color 0.2s ease;
+    }
+
+    .navbar .links a:hover {
+      color: #b2dfdb;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      width: 500px;
+      max-width: 90%;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    h1,h2,h3,h4,h5 { color:#00796b; margin-bottom:15px; }
+    p { color:#555; font-size:1.1em; }
+
+    .btn {
+      padding: 10px 20px;
+      background:#00796b;
+      border:none;
+      color:white;
+      font-size:1em;
+      border-radius:8px;
+      cursor:pointer;
+      margin-top:15px;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+     /* Footer Styling */
+  .footer {
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    background: #00796b;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .footer-content span {
+    margin-right: 10px;
+    font-weight: bold;
+  }
+
+  .social-icon {
+    width: 25px;
+    height: 25px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    cursor: pointer;
+    color: white;
+  }
+
+  .social-icon:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+
+    .btn:hover {
+      background:#004d40;
+      transform: scale(1.05);
+    }
+
+    input[type=text], input[type=email], input[type=password] {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    input[type=text]:focus, input[type=email]:focus, input[type=password]:focus {
+      outline: none;
+      border-color: #00796b;
+      box-shadow: 0 0 5px rgba(0,121,107,0.5);
+    }
+
+    .dashboard-greeting {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.8em;
+      color: #00796b;
+      margin-bottom: 25px;
+    }
+
+    .error { color: red; font-size: 1em; margin-top: 10px; }
+
+    @media (max-width: 600px) {
+      .card { padding: 30px 20px; }
+      .navbar .links a, .navbar .links span { margin-left: 10px; font-size: 1em; }
+    }
+  </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
-
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-      <a class="navbar-brand" href="{{ url_for('index') }}">WeatherApp</a>
-      <div class="d-flex">
-        {% if session.get('user') %}
-          <a href="{{ url_for('dashboard') }}" class="btn btn-light btn-sm me-2">Dashboard</a>
-          <span class="navbar-text text-white me-3">Hello, {{ session['user'] }}</span>
-          <a href="{{ url_for('logout') }}" class="btn btn-danger btn-sm">Logout</a>
-        {% else %}
-          <a href="{{ url_for('login') }}" class="btn btn-light btn-sm me-2">Login</a>
-          <a href="{{ url_for('signup') }}" class="btn btn-warning btn-sm">Signup</a>
-        {% endif %}
-      </div>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">
+      <a href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='image.jpg') }}" alt="Logo">
+      </a>
+      <span style="font-weight: 700; text-align: center; padding-bottom: 8px;">WeatherApp</span>
     </div>
-  </nav>
+    <div class="links">
+      {% if session.get('user') %}
+        <span>Hello, {{ session['user'].split()[0] }}!</span>
+        <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('signup') }}">Signup</a>
+      {% endif %}
+      <a href="{{ url_for('index') }}">Weather</a>
+      <a href="{{ url_for('agriculture') }}">Agriculture Insights</a>
+    </div>
+  </div>
 
-  <main class="flex-grow-1 container mt-4">
+  <!-- Main content -->
+  <div class="content">
     {% block content %}{% endblock %}
-  </main>
+  </div>
+  <!-- Sticky Footer -->
+<!-- Sticky Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <span>Connect with me:</span>
 
-  <footer class="footer bg-dark text-white text-center py-3 mt-auto">
-    <div class="container">
-      <p>Follow us:
-        <a href="https://www.facebook.com/share/172KQ4fVPW/" class="text-white ms-2"><i class="bi bi-facebook"></i></a>
-        <a href="https://x.com/pkiwalile?s=09" class="text-white ms-2"><i class="bi bi-twitter"></i></a>
-        <a href="https://www.instagram.com/pkiwalile?igsh=cHBrMGt0eXN1ZTdh" class="text-white ms-2"><i class="bi bi-instagram"></i></a>
-        <a href="https://www.linkedin.com/in/paulo-kiwalile-a32a1320a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="text-white ms-2"><i class="bi bi-linkedin"></i></a>
-        <a href="https://github.com/paulsangu7" class="text-white ms-2"><i class="bi bi-github"></i></a>
-    </p>
-    </div>
-  </footer>
+    <!-- GitHub -->
+    <a href="https://github.com/paulsangu7" target="_blank" title="GitHub">
+      <svg class="social-icon" viewBox="0 0 24 24">
+        <path fill="white" d="M12,0.5C5.38,0.5,0,5.88,0,12.5c0,5.28,3.438,9.748,8.205,11.326c0.6,0.111,0.82-0.26,0.82-0.577 c0-0.285-0.011-1.04-0.016-2.04c-3.338,0.726-4.042-1.608-4.042-1.608c-0.546-1.388-1.333-1.757-1.333-1.757 c-1.089-0.745,0.082-0.729,0.082-0.729c1.205,0.084,1.838,1.237,1.838,1.237c1.07,1.834,2.809,1.304,3.495,0.997 c0.108-0.775,0.419-1.305,0.762-1.605c-2.665-0.304-5.466-1.334-5.466-5.934c0-1.31,0.469-2.381,1.236-3.221 c-0.124-0.303-0.536-1.524,0.117-3.176c0,0,1.008-0.323,3.3,1.23c0.957-0.266,1.983-0.399,3.003-0.404c1.02,0.005,2.047,0.138,3.006,0.404 c2.289-1.553,3.295-1.23,3.295-1.23c0.655,1.653,0.243,2.874,0.119,3.176c0.77,0.84,1.235,1.911,1.235,3.221 c0,4.609-2.804,5.625-5.475,5.922c0.431,0.371,0.815,1.102,0.815,2.222c0,1.606-0.014,2.903-0.014,3.296 c0,0.319,0.216,0.694,0.825,0.576C20.565,22.246,24,17.779,24,12.5C24,5.88,18.627,0.5,12,0.5z"/>
+      </svg>
+    </a>
+
+    <!-- X/Twitter -->
+    <a href="https://x.com/pkiwalile?s=09" target="_blank" title="X/Twitter">
+      <svg class="social-icon" viewBox="0 0 24 24">
+        <path fill="white" d="M24 4.557a9.833 9.833 0 01-2.828.775 4.932 4.932 0 002.165-2.724c-.951.564-2.005.974-3.127 1.195a4.916 4.916 0 00-8.384 4.482A13.94 13.94 0 011.671 3.149a4.916 4.916 0 001.523 6.574 4.897 4.897 0 01-2.228-.616c-.054 2.281 1.581 4.415 3.949 4.89a4.935 4.935 0 01-2.224.084 4.918 4.918 0 004.59 3.417A9.867 9.867 0 010 19.54a13.905 13.905 0 007.548 2.212c9.142 0 14.307-7.721 13.995-14.646A9.936 9.936 0 0024 4.557z"/>
+      </svg>
+    </a>
+
+    <!-- Facebook -->
+    <a href="https://www.facebook.com/share/172KQ4fVPW/" target="_blank" title="Facebook">
+      <svg class="social-icon" viewBox="0 0 24 24">
+        <path fill="white" d="M22.675 0h-21.35C.592 0 0 .592 0 1.325v21.351C0 23.408.592 24 1.325 24h11.495v-9.294H9.691v-3.622h3.129V8.413c0-3.1 1.894-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.796.715-1.796 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.732 0 1.324-.592 1.324-1.324V1.325C24 .592 23.408 0 22.675 0z"/>
+      </svg>
+    </a>
+
+    <!-- LinkedIn -->
+    <a href="https://www.linkedin.com/in/paulo-kiwalile-a32a1320a" target="_blank" title="LinkedIn">
+      <svg class="social-icon" viewBox="0 0 24 24">
+        <path fill="white" d="M4.98 3.5C4.98 5.43 3.43 7 1.5 7S-2 5.43-2 3.5 0.57 0 2.5 0s2.48 1.57 2.48 3.5zM.5 8H4.5V24H.5V8zM8 8h3.8v2.2h.05c.53-1 1.83-2.05 3.77-2.05 4.04 0 4.8 2.65 4.8 6.08V24h-4V14.5c0-2.25-.04-5.15-3.14-5.15-3.14 0-3.62 2.45-3.62 4.99V24H8V8z"/>
+      </svg>
+    </a>
+
+    <!-- Instagram -->
+    <a href="https://www.instagram.com/pkiwalile?igsh=cHBrMGt0eXN1ZTdh" target="_blank" title="Instagram">
+      <svg class="social-icon" viewBox="0 0 24 24">
+        <path fill="white" d="M12 2.163c3.204 0 3.584.012 4.85.07 1.17.056 1.97.24 2.427.403a4.918 4.918 0 011.675 1.005 4.918 4.918 0 011.005 1.675c.163.457.347 1.257.403 2.427.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.056 1.17-.24 1.97-.403 2.427a4.902 4.902 0 01-1.005 1.675 4.902 4.902 0 01-1.675 1.005c-.457.163-1.257.347-2.427.403-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.17-.056-1.97-.24-2.427-.403a4.918 4.918 0 01-1.675-1.005 4.918 4.918 0 01-1.005-1.675c-.163-.457-.347-1.257-.403-2.427-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.056-1.17.24-1.97.403-2.427a4.902 4.902 0 011.005-1.675 4.902 4.902 0 011.675-1.005c.457-.163 1.257-.347 2.427-.403 1.266-.058 1.646-.07 4.85-.07zM12 0C8.741 0 8.332.014 7.052.072 5.775.129 4.708.34 3.842.693a6.916 6.916 0 00-2.5 1.63A6.916 6.916 0 00.693 4.842C.34 5.708.129 6.775.072 8.052.014 9.332 0 9.741 0 12c0 2.259.014 2.668.072 3.948.057 1.277.268 2.344.621 3.21a6.918 6.918 0 001.63 2.5 6.918 6.918 0 002.5 1.63c.866.353 1.933.564 3.21.621C9.332 23.986 9.741 24 12 24s2.668-.014 3.948-.072c1.277-.057 2.344-.268 3.21-.621a6.918 6.918 0 002.5-1.63 6.918 6.918 0 001.63-2.5c.353-.866.564-1.933.621-3.21C23.986 14.668 
 
 </body>
 </html>
