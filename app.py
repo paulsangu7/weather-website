@@ -95,6 +95,10 @@ def agriculture():
             data["location_name"] = location.title()
     return render_template("agriculture.html", data=data)
 
+@app.route("/health")
+def health_check():
+    return "OK", 200
+
 # -----------------------------
 # Run App
 # -----------------------------
