@@ -1,28 +1,28 @@
 {% extends "base.html" %}
-
 {% block title %}Agriculture Insights{% endblock %}
-
 {% block content %}
 <div class="card">
   <h2>Agriculture Insights</h2>
-  <form action="{{ url_for('agriculture') }}" method="post">
-    <input type="text" name="location" placeholder="Enter city/country" value="{{ data.location_name if data and data.location_name else '' }}" style="padding:10px; width:80%; border-radius:8px; border:1px solid #ccc; margin-bottom:15px;">
-    <br>
-    <button type="submit" class="btn">Get Insights</button>
+  <form method="POST">
+    <input type="text" name="location" placeholder="Enter location" required>
+    <button type="submit" class="btn">Check</button>
   </form>
 
   {% if data %}
     {% if data.error %}
       <p class="error">{{ data.error }}</p>
     {% else %}
-      <h5>Agriculture Insights for {{ data.location_name }}</h5>
-      <p>Average Temperature (last 7 days): <strong>{{ data.temperature_avg }} °C</strong></p>
-      <p>Total Rainfall (last 7 days): <strong>{{ data.precipitation_total }} mm</strong></p>
-      <p>Suggested Crops: <strong>{{ data.suggested_crops | join(", ") }}</strong></p>
-      <p style="margin-top:20px; font-size:0.9em; color:#777;">Press the logo to go back to Weather</p>
+      <h3>Weather in {{ data.city }}</h3>
+      <p><strong>Condition:</strong> {{ data.condition }}</p>
+      <p><strong>Temperature:</strong> {{ data.temperature }} °C</p>
+      <p><strong>Humidity:</strong> {{ data.humidity }}%</p>
+      {% if data.rain %}
+        <p><strong>Rain:</strong> {{ data.rain }} mm</p>
+      {% endif %}
+
+      <h3>Farming Recommendation</h3>
+      <p>{{ recommendation }}</p>
     {% endif %}
-  {% else %}
-    <p>Enter a location above to view agriculture insights.</p>
   {% endif %}
 </div>
 {% endblock %}
