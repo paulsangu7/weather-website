@@ -105,18 +105,19 @@ def agriculture():
 
     if request.method == "POST":
         location = request.form.get("location")
-        weather_data = get_weather(location)  # same weather API used by Weather page
+        weather_data = get_weather(location)  # weather API must return 'city', 'temperature', 'humidity', 'condition', 'rain'
 
         if not weather_data:
             data = {"error": "Could not retrieve weather for this location"}
         else:
             data = weather_data
+            city = weather_data.get("city", location)  # fallback to input if city not returned
             condition = weather_data.get("condition", "").lower()
             temp = weather_data.get("temperature")
             humidity = weather_data.get("humidity")
             rain = weather_data.get("rain", 0)
 
-            # Detailed English recommendation
+            # Detailed English farming recommendation
             if "rain" in condition or rain > 2:
                 recommendation = (
                     "The weather indicates rainfall. This is ideal for water-intensive crops "
@@ -138,8 +139,10 @@ def agriculture():
                     "common crops like maize, beans, cowpeas, or vegetables. Ensure regular monitoring of soil moisture."
                 )
 
-    return render_template("agriculture.html", data=data, recommendation=recommendation)
+            # Include city in data to show in template
+            data['city'] = city
 
+    return render_template("agriculture.html", data=data, recommendation=recommendation)
 
 # -----------------------------
 # Health Check (No login required)
